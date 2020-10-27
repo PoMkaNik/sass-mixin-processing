@@ -1,59 +1,167 @@
 @import 'include-processing';
-// 1.Config
-// need to decline $themes and $config
-// by default $themes: ();
-// $themes: (
-//   // $theme-key: $theme-class-name
-//   theme-light: theme--light,
-//   theme-dark: theme--dark
-// ) !default;
-
-$config: (
-  // theme-light: (
-  //   error: (
-  //     background: #d82d2d,
-  //     color: #666,
-  //   ),
-  //   success: (
-  //     background: #52bf4a,
-  //     color: #fff,
-  //   ),
-  //   warning: (
-  //     background: #c23435,
-  //     color: #fff,
-  //   ),
-  // ),
-  theme-dark:
-    (
-      background: #666,
-      color: #fff,
+// @import 'working-parts';
+// 1.Configs
+// ===MODIFIERS===
+$modifiers-for-man: (
+  -heir: (
+      color: black,
     ),
-  ':hover': (
-    background: #888888,
-  ),
-  error: (
-    background: #d82d2d,
-    color: #666,
-  ),
-  success: (
-    background: #52bf4a,
-    color: #fff,
-  ),
-  warning: (
-    background: #c23435,
-    color: #fff,
-  )
+  -face: (
+      --eyes: (
+        color: blue,
+        background-color: white,
+      ),
+      --nose: (
+        height: 7cm,
+        width: 3cm,
+      ),
+      --lips: (
+        color: red,
+      ),
+    ),
+  -hand: (
+      --left: (
+        text-align: left,
+      ),
+      --right: (
+        text-align: right,
+      ),
+    )
 );
 
-// 2.Base
-// m-button as example
-.m-button {
-  // basic/common properties
-  // no modifiers or theme specifics
-  display: inline-block;
+$btn-sizes: (
+  --lg: (
+    height: 40px,
+  ),
+  --md: (
+    height: 30px,
+  ),
+  --sm: (
+    height: 20px,
+  ),
+);
+
+// ===THEMES===
+// TODO naming
+$theme-1-key-name: theme-light;
+$themes: (
+  $theme-1-key-name: theme--light,
+  theme-dark: theme--dark,
+);
+
+@debug nth(nth($themes, 1), 1);
+@debug nth(nth($themes, 2), 1);
+
+$themes-specifics-for-people: (
+  theme-light: (
+    color: white,
+  ),
+  theme-dark: (
+    -man: (
+        color: black,
+      ),
+    -women: (
+        color: brown,
+      ),
+    -women-hair: (
+        color: brown,
+      ),
+  ),
+);
+
+$themes-specifics-for-btn: (
+  theme-light: (
+    --error: (
+      background: red,
+      color: white,
+    ),
+    --success: (
+      background: limegreen,
+      color: white,
+    ),
+    --warning: (
+      background: orangered,
+      color: lightgrey,
+    ),
+  ),
+  theme-dark: (
+    --error: (
+      background: darkred,
+      color: darkgrey,
+    ),
+    --warning: (
+      background: pink,
+      color: black,
+    ),
+  ),
+);
+
+// ===CLASSES===
+$different-btns: (
+  btn-text: (
+    color: green,
+  ),
+  btn-round: (
+    border-radius: 100%,
+  ),
+);
+// ===PSEUDO===
+
+// 2.SCSS
+.people {
+  display: block;
   padding: 0.5em;
+
+  @include theme-processing(
+    $config: $themes-specifics-for-people,
+    $themes: $themes
+  );
+
+  &-man {
+    @include modifiers-processing($modifiers-for-man);
+
+    &-heir {
+      color: black;
+    }
+
+    &-face {
+      &--eyes {
+        color: blue;
+        background-color: white;
+      }
+      &--nose {
+        height: 7cm;
+        width: 3cm;
+      }
+      &--lips {
+        color: red;
+      }
+    }
+
+    &-hand {
+      &--left {
+        text-align: left;
+      }
+
+      &--right {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.btn {
+  display: inline-block;
+  padding: 1em;
   background: #ccc;
   color: #666;
 
-  @include processing($config: $config);
+  @include modifiers-processing($btn-sizes);
+
+  @include theme-processing(
+    $config: $themes-specifics-for-btn,
+    $themes: $themes
+  );
 }
+
+@include class-processing($different-btns);
