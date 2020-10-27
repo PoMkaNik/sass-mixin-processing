@@ -1,0 +1,198 @@
+// 1. Themes
+// Themes example
+// $themes: (
+//   // $theme-key: $theme-class-name
+//   theme-light: theme--light,
+//   theme-dark: theme--dark
+// );
+
+// 2.Config
+// first level keys must be
+// [a] theme related -> the same as in $themes map
+// [b] modifiers -> processed in class &--$modifier
+// than two types of $theme-key [a] structures are possible:
+// [a-1] with nested --modifiers
+// $config: (
+//  $theme-key: (
+//    $modifier-class-name: (
+//      $modifier-property: $modifier-property-value,
+//      ...
+//    ),
+//  ..
+//  )
+// )
+// [a-2] just list of css properties
+// example
+// $config: (
+//  $theme-key: (
+//    $css-property-1: $css-property-value-1,
+//    $css-property-2: $css-property-value-2
+//    ...
+//  )
+// )
+
+// $config example with themes, themes with modifiers
+// and only modifiers
+// based on buttons
+// !!! Modifiers in modifiers except $theme-keys NOT supported
+// example of NOT supported config
+// not-theme-key: (
+// error: (
+//         background: #d82d2d,
+//         color: #666,
+//       ),
+// ...
+// )
+//
+// $config: (
+//   // [a-1]
+//   theme-light:
+//     (
+//       error: (
+//         background: #d82d2d,
+//         color: #666,
+//       ),
+//       success: (
+//         background: #52bf4a,
+//         color: #fff,
+//       ),
+//       warning: (
+//         background: #c23435,
+//         color: #fff,
+//       ),
+//     ),
+//   // [a-2]
+//   theme-dark:
+//     (
+//       background: #666,
+//       color: #fff,
+//     ),
+//   // [b] modifiers but NOT $theme-keys
+//   error:
+//     (
+//       background: #d82d2d,
+//       color: #666,
+//     ),
+//   success: (
+//     background: #52bf4a,
+//     color: #fff,
+//   ),
+//   warning: (
+//     background: #c23435,
+//     color: #fff,
+//   ),
+//   // css properties -> ignored
+//   background: #c23435,
+//   // modifiers in [modifiers != $theme-keys] NOT supported
+//   not-theme-key: (
+//     error: (
+//         background: #d82d2d,
+//         color: #666,
+//       ),
+//     ...
+//   )
+// );
+
+// 3. @mixin
+// $config processing
+// themes related properties and modifiers
+@mixin processing($config, $themes: ()) {
+  @each $item in $config {
+    $item-key: nth($item, 1);
+    $item-value: nth($item, 2);
+    // check if second element in $item is map
+    // (set of modifiers/css properties)
+    // and not css property value
+    @if type_of($item-value) == map {
+      @if $themes != () {
+        // crete list of all $theme-keys
+        // to avoid looping in map $themes
+        // cause no @break supported to stop the loop
+        // and additional unwanted iterations will be done
+        $full-theme-keys-list: ();
+        @each $theme-key, $theme-class-name in $themes {
+          $full-theme-keys-list: append($full-theme-keys-list, $theme-key);
+        }
+
+        // check if first item in list $item (=$item-key)
+        // is exists in list $full-theme-keys-list
+        @if index($full-theme-keys-list, $item-key) {
+          // === THEME RELATED ===
+          $modifiers-map: $item-value;
+          $theme-class-name: map-get($themes, $item-key);
+          // check if second element of list is map and not css property
+          // if yes -> we have $theme-key structure with --modifiers
+          // if no -> we have $theme-key just list with css properties
+          //
+          // Details: both structures
+          // (several --modifiers [a-1] or list of css properties [a-2])
+          // have the list as first item in $theme-key
+          // [a-1]
+          // <<
+          // ($modifier-class-name: ($modifier-property:
+          //                  modifier-property-value,..)
+          // >>
+          // [a-2]
+          // <<
+          // ($css-property-1: $css-property-value-1,...)
+          // >>
+          // but the second element of this first list is
+          // map if we have --modifiers structure [a-1]
+          // ($modifier-property: modifier-property-value,..)
+          // css property value in another case [a-2]
+          // $css-property-value-1
+          //
+          @if type_of(nth(nth($modifiers-map, 1), 2)) == map {
+            // [a-1]
+            @each $modifier-class-name, $modifier-properties in $modifiers-map {
+              .#{$theme-class-name} &--#{$modifier-class-name} {
+                @each $modifier-property,
+                  $modifier-property-value in $modifier-properties
+                {
+                  #{$modifier-property}: $modifier-property-value;
+                }
+              }
+            }
+          } @else {
+            // [a-2]
+            .#{$theme-class-name} & {
+              @each $item-property, $item-property-value in $item-value {
+                #{$item-property}: $item-property-value;
+              }
+            }
+          }
+          //
+        } @else {
+          // in $config has not only themes-keys
+          // === MODIFIERS if any ===
+          // [b]
+          $modifier-class-name: $item-key;
+          $modifier-properties: $item-value;
+          &--#{$modifier-class-name} {
+            @each $modifier-property,
+              $modifier-property-value in $modifier-properties
+            {
+              #{$modifier-property}: $modifier-property-value;
+            }
+          }
+        }
+      } @else {
+        // no $themes map provided - processing only modifiers
+        @warn 'No $themes map provided.';
+        // === MODIFIERS ===
+        // [b]
+        $modifier-class-name: $item-key;
+        $modifier-properties: $item-value;
+        &--#{$modifier-class-name} {
+          @each $modifier-property,
+            $modifier-property-value in $modifier-properties
+          {
+            #{$modifier-property}: $modifier-property-value;
+          }
+        }
+      }
+    } @else {
+      // if $config exist but only with smth like css properties
+    }
+  }
+}

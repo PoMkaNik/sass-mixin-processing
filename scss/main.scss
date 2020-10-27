@@ -1,0 +1,59 @@
+@import 'include-processing';
+// 1.Config
+// need to decline $themes and $config
+// by default $themes: ();
+// $themes: (
+//   // $theme-key: $theme-class-name
+//   theme-light: theme--light,
+//   theme-dark: theme--dark
+// ) !default;
+
+$config: (
+  // theme-light: (
+  //   error: (
+  //     background: #d82d2d,
+  //     color: #666,
+  //   ),
+  //   success: (
+  //     background: #52bf4a,
+  //     color: #fff,
+  //   ),
+  //   warning: (
+  //     background: #c23435,
+  //     color: #fff,
+  //   ),
+  // ),
+  theme-dark:
+    (
+      background: #666,
+      color: #fff,
+    ),
+  ':hover': (
+    background: #888888,
+  ),
+  error: (
+    background: #d82d2d,
+    color: #666,
+  ),
+  success: (
+    background: #52bf4a,
+    color: #fff,
+  ),
+  warning: (
+    background: #c23435,
+    color: #fff,
+  )
+);
+
+// 2.Base
+// m-button as example
+.m-button {
+  // basic/common properties
+  // no modifiers or theme specifics
+  display: inline-block;
+  padding: 0.5em;
+  background: #ccc;
+  color: #666;
+
+  @include processing($config: $config);
+}
