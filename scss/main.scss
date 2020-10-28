@@ -1,5 +1,4 @@
 @import 'include-processing';
-// @import 'working-parts';
 // 1.Configs
 // ===MODIFIERS===
 $modifiers-for-man: (
@@ -25,6 +24,11 @@ $modifiers-for-man: (
       ),
       --right: (
         text-align: right,
+        --first-finger: (
+          first-letter: (
+            content: '1',
+          ),
+        ),
       ),
     )
 );
@@ -38,6 +42,9 @@ $btn-sizes: (
   ),
   --sm: (
     height: 20px,
+    hover: (
+      height: 25px,
+    ),
   ),
 );
 
@@ -49,8 +56,8 @@ $themes: (
   theme-dark: theme--dark,
 );
 
-@debug nth(nth($themes, 1), 1);
-@debug nth(nth($themes, 2), 1);
+// @debug nth(nth($themes, 1), 1);
+// @debug nth(nth($themes, 2), 1);
 
 $themes-specifics-for-people: (
   theme-light: (
@@ -85,9 +92,58 @@ $themes-specifics-for-btn: (
     ),
   ),
   theme-dark: (
-    --error: (
+    --mod-1-lv: (
       background: darkred,
       color: darkgrey,
+      -el-2-lv: (
+          background: limegreen,
+          color: #888,
+          // pseudo-class in 3rd-lv
+          hover:
+            (
+              background: limegreen,
+              color: #888,
+              // pseudo-element in 4th-lv
+              after:
+                (
+                  background: limegreen,
+                  color: #888,
+                  // element in 5th-lv
+                  -el-5-lv: (
+                      background: darkred,
+                      color: darkgrey,
+                      // modifier in 6th-lv
+                      --mod-6-lv:
+                        (
+                          background: limegreen,
+                          color: #888,
+                          hover: (
+                            background: limegreen,
+                            color: #888,
+                            // pseudo-element in 4th-lv
+                            after:
+                              (
+                                background: limegreen,
+                                color: #888,
+                              ),
+                          ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+      hover: (
+        background: red,
+        color: white,
+        active: (
+          background: orangered,
+          color: lightgrey,
+        ),
+        after: (
+          background: orangered,
+          color: lightgrey,
+        ),
+      ),
     ),
     --warning: (
       background: pink,
@@ -97,56 +153,62 @@ $themes-specifics-for-btn: (
 );
 
 // ===CLASSES===
-$different-btns: (
+$different-buttons: (
   btn-text: (
     color: green,
+    --white: (
+      color: white,
+      hover: (
+        color: black,
+      ),
+    ),
   ),
   btn-round: (
     border-radius: 100%,
   ),
 );
 // ===PSEUDO===
-
+$buttons-pseudo: (
+  after: (
+    color: green,
+    --white: (
+      color: white,
+      hover: (
+        color: black,
+      ),
+    ),
+  ),
+  active: (
+    border-radius: 100%,
+    after: (
+      color: black,
+    ),
+    hover: (
+      color: black,
+    ),
+  ),
+);
 // 2.SCSS
 .people {
   display: block;
   padding: 0.5em;
 
-  @include theme-processing(
+  // theme-processing
+  // @include theme-processing(
+  //   $config: $themes-specifics-for-people,
+  //   $themes: $themes
+  // );
+
+  @include processing(
+    $type: themes,
     $config: $themes-specifics-for-people,
     $themes: $themes
   );
 
   &-man {
-    @include modifiers-processing($modifiers-for-man);
-
-    &-heir {
-      color: black;
-    }
-
-    &-face {
-      &--eyes {
-        color: blue;
-        background-color: white;
-      }
-      &--nose {
-        height: 7cm;
-        width: 3cm;
-      }
-      &--lips {
-        color: red;
-      }
-    }
-
-    &-hand {
-      &--left {
-        text-align: left;
-      }
-
-      &--right {
-        text-align: right;
-      }
-    }
+    // modifiers-processing
+    // @include modifiers-processing($modifiers-for-man);
+    @include processing($type: modifiers, $config: $modifiers-for-man);
   }
 }
 
@@ -156,12 +218,24 @@ $different-btns: (
   background: #ccc;
   color: #666;
 
-  @include modifiers-processing($btn-sizes);
+  // @include modifiers-processing($btn-sizes);
+  @include processing($type: modifiers, $config: $btn-sizes);
 
-  @include theme-processing(
+  // theme-processing
+  // @include theme-processing(
+  //   $config: $themes-specifics-for-btn,
+  //   $themes: $themes
+  // );
+
+  @include processing(
+    $type: themes,
     $config: $themes-specifics-for-btn,
     $themes: $themes
   );
+  // pseudo-processing
+  @include processing($type: pseudo, $config: $buttons-pseudo);
 }
 
-@include class-processing($different-btns);
+// class-processing
+// @include class-processing($different-buttons);
+@include processing($type: class, $config: $different-buttons);
