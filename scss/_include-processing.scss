@@ -1,3 +1,4 @@
+@charset 'utf-8';
 // list of PSEUDO-elements
 $pseudo-elements: (
   after,
@@ -82,7 +83,7 @@ $pseudo-classes: (
           pseudo-element
         );
       } @else {
-        @warn '`#{$pseudo-name}` is not pseudo element/class; will be processed as -element/--modifier; classes in 3rd+ levels nesting is NOT supported';
+        @warn '`#{$pseudo-name}` is not pseudo element/class; will be processed as __element/--modifier; classes in 3rd+ levels nesting is NOT supported';
         // 3rd lv of elements/modifiers nesting processing
         @include list-processing($pseudo-name, $pseudo-properties, modifiers);
       }
@@ -127,11 +128,11 @@ $pseudo-classes: (
     .#{$first-lvl-el-name} & {
       @include properties-processing($list);
     }
-  } @else if $type ==pseudo-class {
+  } @else if $type == pseudo-class {
     &:#{$first-lvl-el-name} {
       @include properties-processing($list);
     }
-  } @else if $type ==pseudo-element {
+  } @else if $type == pseudo-element {
     &::#{$first-lvl-el-name} {
       @include properties-processing($list);
     }
@@ -140,7 +141,7 @@ $pseudo-classes: (
 
 @mixin all-types-processing($fst-lvl-el-name, $list, $map, $type) {
   @if type_of(nth(nth($map, 1), 2)) == map {
-    // nested -elements/--modifiers
+    // nested __elements/--modifiers
     @include map-processing($fst-lvl-el-name, $map, $type);
   } @else {
     // list of css properties
@@ -158,7 +159,7 @@ $pseudo-classes: (
   } @else if $type == themes {
     // 3. @mixin theme-processing
     @include theme-processing($config, $themes);
-  } @else if $type ==pseudo {
+  } @else if $type == pseudo {
     // 5. @mixin pseudo-processing
     @include pseudo-processing($config);
   }
@@ -167,16 +168,16 @@ $pseudo-classes: (
 // ===MODIFIER PROCESSING===
 // 1.Config map
 // keys mast be
-// [a] -elements -> processed in class &-element
+// [a] __elements -> processed in class &__element
 // [b] --modifiers -> processed in class &--modifier
-// [1] with nested --modifiers / -elements
+// [1] with nested --modifiers / __elements
 // $config: (
 //  -first-lvl-element: (
 //    --modifier-class-name: (
 //      modifier-css-property: modifier-css-property-value,
 //      ...
 //    ),
-//    -element-class-name: (
+//   __element-class-name: (
 //      element-css-property: element-css-property-value,
 //      ...
 //    ),
@@ -187,7 +188,7 @@ $pseudo-classes: (
 //      modifier-css-property: modifier-css-property-value,
 //      ...
 //    ),
-//    -element-class-name: (
+//    __element-class-name: (
 //      element-css-property: element-css-property-value,
 //      ...
 //    ),
@@ -197,7 +198,7 @@ $pseudo-classes: (
 // [2] just list of css properties
 // example
 // $config: (
-//  -element (
+//  __element (
 //    css-property-1: css-property-value-1,
 //    css-property-2: css-property-value-2
 //    ...
@@ -255,11 +256,11 @@ $pseudo-classes: (
     @if type_of($item-value) == map {
       $modifiers-map: $item-value;
       // check if second element of list is map and not css property
-      // if yes -> we have inside -elements/--modifiers structure
-      // if no -> we have -elements/--modifiers with list of css properties
+      // if yes -> we have inside __elements/--modifiers structure
+      // if no -> we have __elements/--modifiers with list of css properties
       //
       // Details: both structures
-      // (nested -elements/--modifiers or list of css properties)
+      // (nested __elements/--modifiers or list of css properties)
       // have the list as first item in $item-value
       // <<
       // ($--modifier-class-name: (modifier-css-property:
@@ -269,7 +270,7 @@ $pseudo-classes: (
       // (css-property-1: css-property-value-1,...)
       // >>
       // but the second element of this list is
-      // map if we have -elements/-modifiers structure
+      // map if we have __elements/-modifiers structure
       // ($modifier-property: modifier-property-value,..)
       // css property value in another case
       //
@@ -282,7 +283,7 @@ $pseudo-classes: (
       //
     } @else {
       // if in $config only smth like css properties
-      @warn 'css properties and not -elements/--modifiers on first level in $config NOT correct processing with this mixin';
+      @warn 'css properties and not __elements/--modifiers on first level in $config NOT correct processing with this mixin';
     }
   }
 }
@@ -300,14 +301,14 @@ $pseudo-classes: (
 // first level keys must be
 // the same as in $themes map
 // than two types of $theme-key structures are possible:
-// [1] with nested -elements/--modifiers
+// [1] with nested __elements/--modifiers
 // $config: (
 //  $theme-key: (
 //    --modifier-class-name: (
 //      modifier-css-property: modifier-css-property-value,
 //      ...
 //    ),
-//    -element-class-name: (
+//    __element-class-name: (
 //      element-css-property: element-css-property-value,
 //      ...
 //    ),
@@ -386,11 +387,11 @@ $pseudo-classes: (
           $modifiers-map: $item-value;
           $theme-class-name: map-get($themes, $item-key);
           // check if second element of list is map and not css property
-          // if yes -> we have $theme-key structure with -elements/--modifiers
+          // if yes -> we have $theme-key structure with __elements/--modifiers
           // if no -> we have $theme-key just list with css properties
           //
           // Details: both structures
-          // (nested -elements/--modifiers or list of css properties)
+          // (nested __elements/--modifiers or list of css properties)
           // have the list as first item in $item-value
           // <<
           // ($--modifier-class-name: (modifier-css-property:
@@ -400,7 +401,7 @@ $pseudo-classes: (
           // (css-property-1: css-property-value-1,...)
           // >>
           // but the second element of this list is
-          // map if we have -elements/-modifiers structure
+          // map if we have __elements/-modifiers structure
           // ($modifier-property: modifier-property-value,..)
           // css property value in another case
           //
@@ -431,11 +432,11 @@ $pseudo-classes: (
     @if type_of($item-value) == map {
       $modifiers-map: $item-value;
       // check if second element of list is map and not css property
-      // if yes -> we have inside -elements/--modifiers structure
-      // if no -> we have -elements/--modifiers with list of css properties
+      // if yes -> we have inside __elements/--modifiers structure
+      // if no -> we have __elements/--modifiers with list of css properties
       //
       // Details: both structures
-      // (nested -elements/--modifiers or list of css properties)
+      // (nested __elements/--modifiers or list of css properties)
       // have the list as first item in $item-value
       // <<
       // ($--modifier-class-name: (modifier-css-property:
@@ -445,7 +446,7 @@ $pseudo-classes: (
       // (css-property-1: css-property-value-1,...)
       // >>
       // but the second element of this list is
-      // map if we have -elements/-modifiers structure
+      // map if we have __elements/-modifiers structure
       // ($modifier-property: modifier-property-value,..)
       // css property value in another case
       //

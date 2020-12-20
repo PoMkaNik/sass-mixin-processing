@@ -1,36 +1,37 @@
+@charset 'utf-8';
 @import 'include-processing';
 // 1.Configs
 // ===MODIFIERS===
 $modifiers-for-man: (
-  -heir: (
-      color: black,
+  __heir: (
+    color: black,
+  ),
+  __face: (
+    --eyes: (
+      color: blue,
+      background-color: white,
     ),
-  -face: (
-      --eyes: (
-        color: blue,
-        background-color: white,
-      ),
-      --nose: (
-        height: 7cm,
-        width: 3cm,
-      ),
-      --lips: (
-        color: red,
-      ),
+    --nose: (
+      height: 7cm,
+      width: 3cm,
     ),
-  -hand: (
-      --left: (
-        text-align: left,
-      ),
-      --right: (
-        text-align: right,
-        --first-finger: (
-          first-letter: (
-            content: '1',
-          ),
+    --lips: (
+      color: red,
+    ),
+  ),
+  __hand: (
+    --left: (
+      text-align: left,
+    ),
+    --right: (
+      text-align: right,
+      --first-finger: (
+        first-letter: (
+          content: '1',
         ),
       ),
-    )
+    ),
+  ),
 );
 
 $btn-sizes: (
@@ -64,15 +65,15 @@ $themes-specifics-for-people: (
     color: white,
   ),
   theme-dark: (
-    -man: (
-        color: black,
-      ),
-    -women: (
-        color: brown,
-      ),
-    -women-hair: (
-        color: brown,
-      ),
+    __man: (
+      color: black,
+    ),
+    __women: (
+      color: brown,
+    ),
+    __women-hair: (
+      color: brown,
+    ),
   ),
 );
 
@@ -95,43 +96,44 @@ $themes-specifics-for-btn: (
     --mod-1-lv: (
       background: darkred,
       color: darkgrey,
-      -el-2-lv: (
-          background: limegreen,
-          color: #888,
-          // pseudo-class in 3rd-lv
-          hover:
-            (
-              background: limegreen,
-              color: #888,
-              // pseudo-element in 4th-lv
-              after:
-                (
-                  background: limegreen,
-                  color: #888,
-                  // element in 5th-lv
-                  -el-5-lv: (
-                      background: darkred,
-                      color: darkgrey,
-                      // modifier in 6th-lv
-                      --mod-6-lv:
-                        (
+      __el-2-lv: (
+        background: limegreen,
+        color: #888,
+        // pseudo-class in 3rd-lv
+        hover:
+          (
+            background: limegreen,
+            color: #888,
+            // pseudo-element in 4th-lv
+            after:
+              (
+                background: limegreen,
+                color: #888,
+                // element in 5th-lv
+                __el-5-lv:
+                  (
+                    background: darkred,
+                    color: darkgrey,
+                    // modifier in 6th-lv
+                    --mod-6-lv:
+                      (
+                        background: limegreen,
+                        color: #888,
+                        hover: (
                           background: limegreen,
                           color: #888,
-                          hover: (
-                            background: limegreen,
-                            color: #888,
-                            // pseudo-element in 4th-lv
-                            after:
-                              (
-                                background: limegreen,
-                                color: #888,
-                              ),
-                          ),
+                          // pseudo-element in 4th-lv
+                          after:
+                            (
+                              background: limegreen,
+                              color: #888,
+                            ),
                         ),
-                    ),
-                ),
-            ),
-        ),
+                      ),
+                  ),
+              ),
+          ),
+      ),
       hover: (
         background: red,
         color: white,
@@ -167,6 +169,7 @@ $different-buttons: (
     border-radius: 100%,
   ),
 );
+
 // ===PSEUDO===
 $buttons-pseudo: (
   after: (
@@ -200,7 +203,7 @@ $buttons-pseudo: (
   // );
 
   @include processing(
-    $type: themes,
+    $type: 'themes',
     $config: $themes-specifics-for-people,
     $themes: $themes
   );
@@ -208,7 +211,7 @@ $buttons-pseudo: (
   &-man {
     // modifiers-processing
     // @include modifiers-processing($modifiers-for-man);
-    @include processing($type: modifiers, $config: $modifiers-for-man);
+    @include processing($type: 'modifiers', $config: $modifiers-for-man);
   }
 }
 
@@ -219,7 +222,7 @@ $buttons-pseudo: (
   color: #666;
 
   // @include modifiers-processing($btn-sizes);
-  @include processing($type: modifiers, $config: $btn-sizes);
+  @include processing($type: 'modifiers', $config: $btn-sizes);
 
   // theme-processing
   // @include theme-processing(
@@ -228,14 +231,14 @@ $buttons-pseudo: (
   // );
 
   @include processing(
-    $type: themes,
+    $type: 'themes',
     $config: $themes-specifics-for-btn,
     $themes: $themes
   );
   // pseudo-processing
-  @include processing($type: pseudo, $config: $buttons-pseudo);
+  @include processing($type: 'pseudo', $config: $buttons-pseudo);
 }
 
 // class-processing
 // @include class-processing($different-buttons);
-@include processing($type: class, $config: $different-buttons);
+@include processing($type: 'class', $config: $different-buttons);
