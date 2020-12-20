@@ -191,27 +191,41 @@ $buttons-pseudo: (
     ),
   ),
 );
+// != 1.Configs
+
 // 2.SCSS
 .people {
   display: block;
   padding: 0.5em;
 
   // theme-processing
+  // v0.1
   // @include theme-processing(
   //   $config: $themes-specifics-for-people,
   //   $themes: $themes
   // );
 
-  @include processing(
-    $type: 'themes',
+  // v1.0
+  // @include processing(
+  //   $type: 'themes',
+  //   $config: $themes-specifics-for-people,
+  //   $themes: $themes
+  // );
+
+  // v2.0
+  @include processing-new(
     $config: $themes-specifics-for-people,
     $themes: $themes
   );
 
   &-man {
     // modifiers-processing
+    // v0.1
     // @include modifiers-processing($modifiers-for-man);
-    @include processing($type: 'modifiers', $config: $modifiers-for-man);
+    // v1.0
+    // @include processing($type: 'modifiers', $config: $modifiers-for-man);
+    // v2.0
+    @include processing-new($config: $modifiers-for-man);
   }
 }
 
@@ -221,24 +235,42 @@ $buttons-pseudo: (
   background: #ccc;
   color: #666;
 
+  // v0.1
   // @include modifiers-processing($btn-sizes);
-  @include processing($type: 'modifiers', $config: $btn-sizes);
+  // v1.0
+  // @include processing($type: 'modifiers', $config: $btn-sizes);
+  // v2.0
+  @include processing-new($config: $btn-sizes);
 
   // theme-processing
+  // v0.1
   // @include theme-processing(
   //   $config: $themes-specifics-for-btn,
   //   $themes: $themes
   // );
 
-  @include processing(
-    $type: 'themes',
-    $config: $themes-specifics-for-btn,
-    $themes: $themes
-  );
+  // v1.0
+  // @include processing(
+  //   $type: 'themes',
+  //   $config: $themes-specifics-for-btn,
+  //   $themes: $themes
+  // );
+  // v2.0
+  @include processing-new($config: $themes-specifics-for-btn, $themes: $themes);
+
   // pseudo-processing
-  @include processing($type: 'pseudo', $config: $buttons-pseudo);
+  // v0.1
+  // @include pseudo-processing($buttons-pseudo);
+  // v1.0
+  // @include processing($type: 'pseudo', $config: $buttons-pseudo);
+  // v2.0
+  @include processing-new($config: $buttons-pseudo);
 }
 
 // class-processing
+// v0.1
 // @include class-processing($different-buttons);
-@include processing($type: 'class', $config: $different-buttons);
+// v1.0
+// @include processing($type: 'class', $config: $different-buttons);
+// v2.0
+@include processing-new($config: $different-buttons);

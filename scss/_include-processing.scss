@@ -1,4 +1,5 @@
 @charset 'utf-8';
+
 // list of PSEUDO-elements
 $pseudo-elements: (
   after,
@@ -149,6 +150,9 @@ $pseudo-classes: (
   }
 }
 
+//
+// v1.0
+//
 @mixin processing($type, $config, $themes: ()) {
   @if $type == class {
     // 4. @mixin class-processing
@@ -165,6 +169,42 @@ $pseudo-classes: (
   }
 }
 
+//
+// v2.0
+//
+@mixin processing-new($config, $themes: ()) {
+  $first-2-letters: unquote(str-slice(nth(nth($config, 1), 1), 1, 2));
+  $first-element: nth(nth($config, 1), 1);
+  $pseudo-elements: $pseudo-elements;
+  $pseudo-classes: $pseudo-classes;
+
+  @if $themes != () {
+    // 3. @mixin theme-processing
+    @include theme-processing($config, $themes);
+  } @else {
+    @if index($pseudo-classes, $first-element) or
+      index($pseudo-elements, $first-element)
+    {
+      // 5. @mixin pseudo-processing
+      @include pseudo-processing($config);
+    } @else if
+      $first-2-letters ==
+      unquote('__') or
+      $first-2-letters ==
+      unquote('--')
+    {
+      // 2. @mixin modifier-processing
+      @include modifiers-processing($config);
+    } @else {
+      // 4. @mixin class-processing
+      @include class-processing($config);
+    }
+  }
+}
+
+//
+//v0.1
+//
 // ===MODIFIER PROCESSING===
 // 1.Config map
 // keys mast be
@@ -288,6 +328,9 @@ $pseudo-classes: (
   }
 }
 
+//
+//v0.1
+//
 // ===THEME PROCESSING===
 // 1. Themes
 // Themes example
@@ -421,6 +464,9 @@ $pseudo-classes: (
   }
 }
 
+//
+//v0.1
+//
 // 4. @mixin class-processing
 @mixin class-processing($config) {
   @each $item in $config {
@@ -464,6 +510,9 @@ $pseudo-classes: (
   }
 }
 
+//
+//v0.1
+//
 // 5. @mixin pseudo-processing
 @mixin pseudo-processing(
   $config,
